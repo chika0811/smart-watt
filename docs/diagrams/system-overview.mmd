@@ -1,0 +1,48 @@
+graph TD
+    subgraph Client Layer
+        MobileApp["NoskyTech Mobile App (iOS / Android)"]
+        WebApp["NoskyTech Web Dashboard / Admin Console"]
+    end
+
+    subgraph Transport Manager
+        TM["Transport Manager (Route Evaluator)"]
+        LocalWiFi["Local Wi-Fi (HTTP / UDP mDNS)"]
+        BLE["Bluetooth LE Transport"]
+        CloudTransport["Cloud MQTT / WSS Transport"]
+    end
+
+    subgraph NoskyTech Cloud Platform
+        API["REST / GraphQL API Gateway"]
+        Auth["Supabase Auth / OAuth 2.0 & RBAC"]
+        DB[(PostgreSQL + Row Level Security)]
+        Realtime["Real-time State Engine (WebSockets)"]
+        EMQX["EMQX Enterprise MQTT Broker"]
+        CypherEngine["Cypher AI Agent Service (LLM Tool Engine)"]
+        OTA["Firmware / OTA Release Service"]
+    end
+
+    subgraph Hardware Layer
+        SmartWatt["SMART WATT (ESP32 8-Relay Controller)"]
+        FutureDevices["Future Devices (Plugs, Lights, Sensors)"]
+    end
+
+    MobileApp --> TM
+    WebApp --> API
+
+    TM --> LocalWiFi
+    TM --> BLE
+    TM --> CloudTransport
+
+    LocalWiFi --> SmartWatt
+    BLE --> SmartWatt
+    CloudTransport --> EMQX
+
+    EMQX <--> API
+    API --> DB
+    API --> Realtime
+    API --> Auth
+    API --> CypherEngine
+    API --> OTA
+
+    EMQX <--> SmartWatt
+    EMQX <--> FutureDevices
